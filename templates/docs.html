@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebringDirAPI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<a href="/">Home</a>
+<h1>WebringDirAPI - Docs</h1>
+<div class="spacer2"></div>
+<div class="box1">
+<h3>All endpoints:</h3>
+<pre>/add - POST
+/get - GET
+/get/&lt;name&gt; - GET
+/report/&lt;name&gt; - GET</pre>
+</div>
+<hr>
+<!--/add-->
+<h2>/add - POST</h2>
+<p>Add a new webring</p>
+
+<div class="spacer3"></div>
+
+<h3>Send</h3>
+<pre>
+{
+  "name": "example",
+  "url": "https://example.com",
+  "desc": "optional description"
+}
+</pre>
+
+<h3>Response</h3>
+<pre>
+{
+  "message": "added",
+  "name": "example"
+}
+</pre>
+
+<div class="spacer2"></div>
+<hr>
+<!--/get-->
+<h2>/get - GET</h2>
+<p>Get a list of all webrings</p>
+
+<div class="spacer3"></div>
+
+<h3>Response</h3>
+<pre>List of all the webrings in JSON</pre>
+
+<div class="spacer2"></div>
+<hr>
+<!--/get/<name>-->
+<h2>/get/&lt;name&gt; - GET</h2>
+<p>Get a specific webring by name</p>
+
+<div class="spacer3"></div>
+
+<h3>Response</h3>
+<pre>
+{
+  "url": "https://example.com",
+  "desc": "empty"
+}
+</pre>
+<div class="spacer2"></div>
+<hr>
+
+<!--/report/<name>-->
+<h2>/report/&lt;name&gt; - GET</h2>
+<p>Report a webring that breaks <a href="/rules">the rules</a> or abuses the API</p>
+
+<div class="spacer3"></div>
+
+<h3>Response</h3>
+<pre>
+{"message": "reported"}
+</pre>
+<div class="spacer2"></div>
+<hr>
+
+<h3>Error responses</h3>
+<ul>
+
+    <li>
+        <p><strong>{"error": "no JSON sent"}</strong> - given when the user didn't provide any data in the POST request</p>
+    </li>
+
+    <li>
+        <p><strong>{"error": "missing fields"}</strong> - given when required fields (name or url) are missing</p>
+    </li>
+
+    <li>
+        <p><strong>{"error": "url already exists"}</strong> - given when the url provided in the /add request already exists</p>
+    </li>
+
+    <li>
+        <p><strong>{"error": "name already exists"}</strong> - given when the name provided in the /add request already exists</p>
+    </li>
+
+    <li>
+        <p><strong>{"error": "name not found"}</strong> - given when the name provided in report doesn't exist</p>
+    </li>
+
+</ul>
+</body>
+</html>

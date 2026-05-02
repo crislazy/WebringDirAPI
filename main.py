@@ -19,39 +19,58 @@ def save(site):
     with open(FILE, "w") as f:
          json.dump(site, f, indent=2)
 
+# ------------------------------------
+
+# Main pages
+@app.route('/')
+def index():
+    return render_template("index.html")
+
 @app.route('/docs')
 def docs():
-    return("Empty rn")
+    return render_template("docs.html")
+
+@app.route('/web')
+def web():
+    return render_template("web.html")
+
+@app.route('/rules')
+def rules():
+    return render_template("rules.html")
+
+# ------------------------------------
+
+# API
 
 @app.route('/add', methods=["POST"])
 def add():
     data = request.get_json()
     if not data:
         return jsonify({"error": "no JSON sent"}), 400
-    name = data.get("name").lower()
+    name = data.get("name")
     url = data.get("url")
-    desc = data.get("desc", "Nothing")
+    desc = data.get("desc", "empty")
 
-    info = read()
+    db = read()
 
     if not name or not url:
         return jsonify({"error": "missing fields"}), 400
     
-    for site in info.values():
+    name = name.lower()
+    
+    for site in db.values():
         if site["url"] == url:
             return jsonify({"error": "url already exists"}), 400
     
-    if name in info:
-        return jsonify({
-            "error": "already exists"
-        }), 400
+    if name in db:
+        return jsonify({"error": "name already exists"}), 400
 
-    info[name] = {
+    db[name] = {
         "url": url,
         "desc": desc
     }
 
-    save(info)
+    save(db)
 
     return jsonify({
         "message": "added",
@@ -60,34 +79,38 @@ def add():
 
 @app.route('/get', methods=["GET"])
 def get():
-    sites = read()
-    return jsonify(sites)
+    db = read()
+    return jsonify(db)
 
 @app.route('/get/<name>', methods=["GET"])
 def get_name(name):
     name = name.lower()
-    info = read()
-    if name not in info:
-        return jsonify({"error": "name not found"}), 400
+    db = read()
     
-    return(info[name])
+    return jsonify(db[name])
 
 @app.route('/report/<name>', methods=["GET"])
 def report(name):
+    db = read()
+    if not name in db:
+        return jsonify({"error": "name not found"}), 400
+    else:
+        ct = datetime.datetime.now().isoformat()
+        info = {
+            "name": name,
+            "time": ct
+        }
+        try:
+            requests.post(
+                "https://crisapis.vercel.app/api/reportSiteV1",
+                json=info,
+                timeout=3
+            )
+            return jsonify({"message": "reported"})
+        except:
+            return jsonify({"error": "report failed"}), 500
 
-    if not name:
-        return jsonify({"error": "no name"}), 400
-    ct = datetime.datetime.now().isoformat()
-    info = {
-        "name": name,
-        "time": ct
-    }
-
-    requests.post(
-        "https://crisapis.vercel.app/api/reportSiteV1",
-        json=info
-    )
-    return jsonify({"message": "reported"})
+# ------------------------------------
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=8000)

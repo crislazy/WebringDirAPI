@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WDAPI - WebUI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <a href="/">Home</a>
+    <h1>WebringDirAPI - WebUI</h1>
+    <div class="spacer2"></div>
+    <h3>Add a new webring</h3>
+    <form class="webring-add" id="webring-add">
+        <input type="text" name="name" placeholder="Webring Name">
+        <input type="text" name="url" placeholder="Webring URL">
+        <input type="text" name="description" placeholder="A quick description">
+        <button type="submit">Submit</button>
+        <p id="add-result"></p>
+    </form>
+
+    <h3>See all webrings</h3>
+    <button onclick="getAll()">Run</button>
+    <pre id="all" class="info-pre"></pre>
+
+    <h3>See a specic webring info</h3>
+    <input id="getname" type="text" name="name" placeholder="Webring Name">
+    <button onclick="getOne()">Run</button>
+    <pre id="info-one" class="info-pre"></pre>
+
+    <h3>Report a webring</h3>
+    <input id="reportname" type="text" name="name" placeholder="Webring Name">
+    <button onclick="report()">Run</button>
+    <pre id="report-info" class="info-pre"></pre>
+
+    <script>
+        async function submitForm(e) {
+            e.preventDefault();
+            const data = {
+                name: document.querySelector('[name="name"]').value,
+                url: document.querySelector('[name="url"]').value,
+                desc: document.querySelector('[name="description"]').value
+            };
+
+            const res = await fetch('/add', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+
+            const result = await res.json();
+            console.log(result);
+            document.getElementById("add-result").innerText =
+                result.message || result.error;
+        }
+
+        document.getElementById('webring-add').addEventListener('submit', submitForm);
+
+        async function getAll() {
+            const res = await fetch("/get");
+            const data = await res.json();
+            document.getElementById("all").innerText =
+                JSON.stringify(data, null, 2);
+            document.getElementById("all").style.display = "block";
+        }
+
+        async function getOne() {
+            const name = document.getElementById("getname").value;
+            const res = await fetch(`/get/${name}`);
+            const data = await res.json();
+            const info = document.getElementById("info-one");
+            info.style.display = "block";
+            info.innerText = JSON.stringify(data, null, 2);
+        }
+
+        async function report() {
+            const name = document.getElementById("reportname").value;
+            const res = await fetch(`/report/${name}`);
+            const data = await res.json();
+            const info = document.getElementById("report-info");
+            info.style.display = "block";
+            info.innerText = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>

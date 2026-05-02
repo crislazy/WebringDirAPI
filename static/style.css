@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@200..800&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+/* Main */
+
+h1,h2,h3,h4,h5,p,li, label {
+    font-family: DM Sans;
+    color: rgb(0, 0, 0);
+}
+
+a { 
+    display: inline-block;
+    font-family: DM Sans;
+    text-decoration: none;
+    color: rgb(0, 124, 165);
+}
+
+a:hover {
+    text-decoration: underline;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.info-pre {
+    background-color: rgb(0, 0, 0);
+    color: white;
+    width: fit-content;
+    padding: 5px;
+    overflow-y: auto;
+    max-height: 200px;
+    display: none;
+}
+
+.box1 {
+    border: 2px solid black;
+    width: fit-content;
+    padding: 5px;
+    border-radius: 3px;
+}
+/* Spacers */
+.spacer1 {
+    height: 10px;
+}
+
+.spacer2{
+    height: 5px;
+}
+
+.spacer3 {
+    height: 7px;
+}
