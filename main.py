@@ -86,6 +86,8 @@ def get():
 def get_name(name):
     name = name.lower()
     db = read()
+    if not name in db:
+        return jsonify({"error": "name not found"}), 400
     
     return jsonify(db[name])
 
