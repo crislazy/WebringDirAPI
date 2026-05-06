@@ -3,6 +3,8 @@
 
 ---
 
+# Warning: No rate limiting implemented yet
+
 ## Features
 - Add a webring
 - Get all webrings
